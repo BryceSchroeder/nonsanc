@@ -1,0 +1,40 @@
+<meta charset="UTF-8">
+
+This is an example of variable text output.
+
+This illustrates random alternatives: [blue|green|yellow] is a color.
+Some alternatives may be empty or duplicated, e.g. "Maybe [or maybe not||]."
+All alternatives are equally likely, so duplicating them can coarsely 
+adjust probabilities.
+
+Random alternatives can be nested: [[blue|red] is a color|[A|B] is a letter].
+
+Variables from the substitutions passed into the text output engine
+can be referenced: The player character is named [Jack], and [his] [Sister] is
+named [Jill]. 
+
+If the substitution value for the name in the tag is text, it is put into the
+output text directly. 
+
+If the substitution value is an int or bool, it pre-sets the random number 
+generator and generates no text output. This can be used to index random
+alternatives using a substitution value which is an integer:
+"Your favorite color is [favorite_color][red|orange|yellow] so I got you 
+this [favorite_color][apple|grapefruit|banana] to eat."
+Indicies saturate: if the value is less than 0, the alternative for 0 is 
+used, and if the value is greather than or equal to the index of the last
+alternative, the last alternative is used. 
+
+As another example, for optional text using a boolean:
+[ann_betrayed][|Did you think I would for get your betrayal, [Trainer]?]
+Note that the <i>false</i> alternative is first, and the true is second;
+this is because false is interpreted as 0 and true as 1.
+
+If it is a function, it is called with the name and the
+substitution value dictionary as parameters, and then the rules above are 
+applied depending on the return type.
+
+Brackets can be included in the text with the HTML special character
+codes, e.g. &#91; example &#93;.
+
+

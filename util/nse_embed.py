@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
 #    This file is part of the Nonsanc Project.
-#    (C) 2018 Gnostic Instruments, Inc.
+#    (C) 2018-2019 Gnostic Instruments, Inc.
 #    Author(s): Bryce Schroeder, bryce@gnosticinstruments.com
 #
 #
@@ -79,7 +79,7 @@ def script_tag(name, data):
     return '''<script id="%s">\n%s\n</script>\n'''%(
       name, str(data, 'utf-8'))
   else:
-    return '<script id="%s" src="%s">\n'%(name, data)
+    return '<script id="%s" src="%s"></script>\n'%(name, data)
 
 HANDLERS = {
   'jpg': (lambda fn,d: img_tag('image/jpeg', fn, d)),
@@ -135,7 +135,7 @@ TAG = "<!-- _NSE_RESOURCES -->"
 
 
 if len(sys.argv) < 4 or mode not in ('link','embed'):
-  print("""
+  print ("""
 nse_embed - Assemble image, text/html, css, js and sound resources into a 
 single HTML page for distribution. The comment <!-- _NSE_RESOURCES --> will be
 replaced by the resources.
