@@ -36,7 +36,7 @@ function main () {
   sc.ann_betrayed = true;
 
 
-  main_div.innerHTML = sc.process(text_example.innerHTML);
+  main_div.innerHTML = sc.process(text_example.innerHTML, {myLocal: "Hello!"});
   
 
 
