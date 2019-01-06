@@ -70,14 +70,122 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class StoryContext extends Map {
+class StoryContext {
+  _handle_lookup(item) {
+    if (typeof item === 'string')
+      return item;
+    else if (typeof item === 'number') {
+      this._force_rng = item;
+      return '';
+    } else if (typeof item === 'function') {
+      return this._handle_lookup(item(this, item));
+    } else if (typeof item === 'boolean') {
+      this._force_rng = (item? 1 : 0); 
+      return '';
+    }
+      
+    return `<b>StoryContext: bad type for '${item}': ${typeof item}</b>`
+  }
+
+
+  _handle_tag(tag_contents, locals) {
+    //console.log("%&", this["Trainer"], typeof this[tag_contents[0]]);
+    if (tag_contents.length == 1) {
+      let name = tag_contents[0];
+      if (name in StoryContext.prototype) {
+        return `<b>StoryContext: '${name}' is a reserved variable name.</b>`
+      }
+      if (name in locals) 
+        return this._handle_lookup(locals[name]);
+      else if (name in this)
+        return this._handle_lookup(this[name]);
+      else
+        return `<b>StoryContext: undefined tag '${name}'</b>`;
+
+      return "{" + tag_contents[0] + "}";
+    } else if (tag_contents.length > 1) {
+      if (this._force_rng !== null) {
+        let saturated_index = Math.max(0, Math.min(this._force_rng, 
+                                            tag_contents.length - 1))
+        this._force_rng = null;
+        return tag_contents[saturated_index];
+      } else
+        return random_choice(tag_contents);
+      //return "{" + tag_contents.join("*") + "}";
+    }
+
+    return "<b>StoryContext: empty tag error</b>"
+  }
+
+  _parse(template, locals) {
+    this._force_rng = null; // Do this at each parse level so that
+                           // a misplaced tag can't cause mysterious behavior
+
+    let tag_depth = 0,
+        max_tag_depth = 0,
+        tag_start = 0,
+        escaped = false;
+
+    let line_number = 0;
+
+    let tag_contents = new Array(),
+        parsed = new Array(),
+        pipe_position = 0;
+
+    for (var i = 0; i < template.length; ++i) {
+      switch(template[i]) {
+        case '\\':
+          if (i >= template.length - 1) {
+            parsed.push("<b>StoryContext: pruned trailing backslash</b>");
+          } else {
+            if (tag_depth == 0) parsed.push('\\'+template[i+1]);
+            ++i;
+          }
+          break;
+        case '[':
+          ++tag_depth;
+          max_tag_depth = Math.max(tag_depth, max_tag_depth);
+          if (tag_depth == 1) {
+            tag_start = i+1;
+            pipe_position = i;
+          }
+          break;
+        case '|':
+          if (tag_depth == 1) {
+            tag_contents.push(template.slice(pipe_position+1, i));
+            pipe_position = i;
+          }
+          break;
+        case ']':
+          --tag_depth;
+          if (tag_depth == 0) {
+            tag_contents.push(template.slice(pipe_position+1, i));
+            parsed.push(this._handle_tag(tag_contents, locals));
+            tag_contents = new Array();
+          }
+          break;
+        default:
+          if (tag_depth == 0) parsed.push(template[i]);
+          break;
+      }
+
+    }
+   
+    return [parsed.join(''), max_tag_depth];
+  }
+
 
   /* Render a template into processed text for display. */
   process(template, locals = null) {
-    this.locals = (locals? new Map(locals) : new Map());
+    locals = (locals? locals : new Map());
     
+    let parsed = template, max_tag_depth = 0;
 
-    return template + " <b>Processed! FIXME</b> ";
+    do {
+      [parsed, max_tag_depth] = this._parse(parsed, locals);
+    } while (max_tag_depth);
+
+    return parsed.replace(/\\([[|\]\\])/gm, '$1');
   }
 
   /* Add or update multiple new story variables at once */
