@@ -48,7 +48,7 @@ const imgLoader = Object.freeze({
 			if (loadedImgs >= imgCount) {
 				console.log('done.');
 				game.imgPreloaded = true;
-				game.initialize();		//In game.js
+				game.initialize();		// In game.js
 			}
 		}
 
@@ -77,7 +77,7 @@ const audioLoader = Object.freeze({
 		// Stub for now; develop audio loader later...
 		console.log('done.');
 		game.audioPreloaded = true;
-		game.initialize();		//In game.js
+		game.initialize();		// In game.js
 	},
 });
 

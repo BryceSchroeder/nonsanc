@@ -87,11 +87,6 @@ const tiles = Object.freeze({
 		for (var tile_name in tiles.frame_lists) {			
 			tiles.tile[tile_name] = new Tile(tiles.frame_lists[tile_name]);
 		}
-		
-		// Move on to the next step after creating tiles
-		//draw_map();
-		//initialize_map(); //In game_map.js
-		//maps.createCells(); //In game_map.js
 	},
 });
 

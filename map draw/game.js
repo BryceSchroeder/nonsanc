@@ -59,7 +59,7 @@ let game = {
 			// Initialize game assets
 			console.log('Setting up game assets...');
 			tiles.createTiles();
-			maps.createCells();
+			gameMaps.createMaps();
 			console.log('done.');
 			
 			// Initialize renderer

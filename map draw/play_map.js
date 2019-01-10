@@ -25,9 +25,9 @@
 
 const playMap = Object.freeze({
 	cellFrameTick: function (t) {
-		for (let i = 0; i < maps.cells[render.map.name].length; i++) {
-			for (let j = 0; j < maps.cells[render.map.name][i].length; j++) {
-				maps.cells[render.map.name][i][j].advanceFrame();
+		for (let i = 0; i < gameMaps.map[render.map.name].cells.length; i++) {
+			for (let j = 0; j < gameMaps.map[render.map.name].cells[i].length; j++) {
+				gameMaps.map[render.map.name].cells[i][j].advanceFrame();
 			}
 		}
 		
@@ -44,13 +44,14 @@ const playMap = Object.freeze({
 		//console.log(render.ceil.totalFrames);
 	},
 	
-	drawMap: function (t) {
+	refreshMap: function (t) {
 		// TODO: split this apart to draw background tiles, then sprites, then foreground tiles
-		for (let i = 0; i < maps.cells[render.map.name].length; i++) {
-			for (let j = 0; j < maps.cells[render.map.name][i].length; j++) {
+		// This should probably be done in the GameMap class by creating a function to draw the map
+		for (let i = 0; i < gameMaps.map[render.map.name].cells.length; i++) {
+			for (let j = 0; j < gameMaps.map[render.map.name].cells[i].length; j++) {
 				let x = j * render.cell.sizeX;
 				let y = i * render.cell.sizeY;
-				maps.cells[render.map.name][i][j].drawFrame(render.map.canvasContext, x, y, cell.BG_TILES | cell.FG_TILES, 1, 1);
+				gameMaps.map[render.map.name].cells[i][j].drawFrame(render.map.canvasContext, x, y, cell.BG_TILES | cell.FG_TILES, 1, 1);
 			}
 		}
 		
@@ -80,7 +81,7 @@ const playMap = Object.freeze({
 		}
 
 		if ((t - render.map.lastFrameT) >= (render.map.interval - render.map.lastFrameSlip)) {
-			playMap.drawMap(t);		// Redraw the map
+			playMap.refreshMap(t);		// Redraw the map
 		}
 
 		/*

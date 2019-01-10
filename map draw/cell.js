@@ -88,7 +88,7 @@ class Cell {
 	}
 	
 	// Add a tile to cell at specified index in the tile list (at end of list if index <= -1)
-	tileAdd (tile_name, tile_list = cell.BG_TILES, index = -1) {
+	addTile (tile_name, index = -1, tile_list = cell.BG_TILES) {
 		if (index <= -1 || index >= this.tiles[tile_list].length) {
 			this.tiles[tile_list].push(tile_name);
 		}
@@ -106,13 +106,13 @@ class Cell {
 	}
 	
 	// Remove all tiles by clearing the list
-	tileRemoveAll (tile_list = cell.BG_TILES) {
+	removeAllTiles (tile_list = cell.BG_TILES) {
 		this.tiles[tile_list] = new Array();
 		this.calculateFrameCount();
 	}
 	
 	// Remove the last tile from the list
-	tileRemoveLast (tile_list = cell.BG_TILES) {
+	removeLastTile (tile_list = cell.BG_TILES) {
 		var new_tiles = new Array();
 		for (var i = 0; i < (this.tiles[tile_list].length - 1); i++) {
 			new_tiles.push(this.tiles[tile_list][i]);
@@ -123,7 +123,7 @@ class Cell {
 	}
 	
 	// Remove tile at specified index in the tile list from cell
-	tileRemoveIndex (index, tile_list = cell.BG_TILES) {
+	removeTileByIndex (index, tile_list = cell.BG_TILES) {
 		if (index >= 0 && index < this.tiles[tile_list].length) {
 			var new_tiles = new Array();
 			for (var i = 0; i < this.tiles[tile_list].length; i++) {
@@ -137,7 +137,7 @@ class Cell {
 	}
 	
 	// Remove all instances of a background tile with tile_name
-	tileRemoveName (tile_name, tile_list = cell.BG_TILES) {
+	removeTileByName (tile_name, tile_list = cell.BG_TILES) {
 		var new_tiles = new Array();
 		for (var i = 0; i < this.tiles[tile_list].length; i++) {
 			if (this.tiles[tile_list][i] != tile_name) {
@@ -150,6 +150,10 @@ class Cell {
 	
 	getTileCount (tile_list = cell.BG_TILES) {
 		return this.tiles[tile_list].length;
+	}
+	
+	getTileList (tile_list = cell.BG_TILES) {
+		return this.tiles[tile_list];
 	}
 	
 	isTraversable () {
