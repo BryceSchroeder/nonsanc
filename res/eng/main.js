@@ -42,6 +42,7 @@ function main () {
   let ctx = document.getElementById("map_canvas").getContext("2d");
   ctx.fillRect(0,0,480,480);
   nse_tilesets.testBgTiles.dead_tree.drawTile(ctx, 0, 0, n=0);
+  nse_tilesets.fountain.drawTile(ctx, 64, 32, n=1);
 
   /* MapDraw testing */
   /* Enable its stylesheet - style sheets integrated by nse_embed are 

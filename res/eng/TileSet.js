@@ -29,6 +29,7 @@ class TileSet {
     this._width = tile_width;
     this._height = tile_height;
     this._image_resource_name = file_name;
+    this._tile_names = new Array();
 
     let scratch = document.createElement('canvas');
     let context = scratch.getContext("2d");
@@ -36,6 +37,7 @@ class TileSet {
   
     //console.log( tile_width, tile_height, file_name, tiles);
     for (const name in tiles) {
+      this._tile_names.push(name);
       let frames = new Array();
       let flags = this._movement_str2int(tiles[name][0]);
       for (let j = 1; j < tiles[name].length; j += 2) {
