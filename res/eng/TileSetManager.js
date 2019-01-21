@@ -25,8 +25,8 @@
 
 class TileSetManager {
   constructor() {
-    for (const name in tileset_definitions) {
-      this[name] = new TileSet(...tileset_definitions[name]);
+    for (const name in res.scn.tile_definitions) {
+      this[name] = new TileSet(...res.scn.tile_definitions[name]);
       for (let i = 0; i < this[name]._tile_names.length; ++i) {
         let tilename = this[name]._tile_names[i];
         this[tilename] = this[name][tilename];

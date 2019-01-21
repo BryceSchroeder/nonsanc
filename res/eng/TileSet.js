@@ -25,15 +25,15 @@
 "use strict";
 
 class TileSet {
-  constructor(tile_width = 32, tile_height = 32, file_name = null, tiles = {}) {
+  constructor(tile_width = 32, tile_height = 32, img_name = null, tiles = {}) {
     this._width = tile_width;
     this._height = tile_height;
-    this._image_resource_name = file_name;
+    this._image_resource_name = img_name;
     this._tile_names = new Array();
 
     let scratch = document.createElement('canvas');
     let context = scratch.getContext("2d");
-    let image_resource = document.getElementById(file_name);
+    let image_resource = res.scn.tiles[img_name];
   
     //console.log( tile_width, tile_height, file_name, tiles);
     for (const name in tiles) {

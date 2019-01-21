@@ -27,7 +27,8 @@ function main () {
 
   /* StoryContext testing */
   let main_div = document.getElementById("nse_main_div");
-  let text_example = document.getElementById("res_scn_variable_text_example");
+  let text_example = res.scn.variable_text_example;
+
   let sc = new StoryContext();
   sc["Trainer"] = "Jack";
   sc["his"] = "his";
@@ -35,6 +36,8 @@ function main () {
   sc["sibling"] = "sister";
   sc.favorite_color = 2; // This works too, might as well own it.
   sc.ann_betrayed = true;
+  
+  main_div.innerHTML = sc.process(text_example, {myLocal: "Hello!"});
 
   /* TileSet testing */
   let nse_tilesets = new TileSetManager();
@@ -50,7 +53,6 @@ function main () {
   document.getElementById("res_scn_map_draw").disabled = false;
 
 
-  main_div.innerHTML = sc.process(text_example.innerHTML, {myLocal: "Hello!"});
   
 
 
