@@ -92,6 +92,7 @@ HANDLERS = {
   'css': (lambda fn,d: css_tag(fn, d)),
   'js': (lambda fn,d: script_tag(fn, d)),
 #  'json': (lambda fn,d: json_tag(fn, d)),
+  'yaml': (lambda fn,d: yaml_tag(fn, d)),
   'ogg': (lambda fn,d: audio_tag('audio/ogg', fn, d)),
   'wav': (lambda fn,d: audio_tag('audio/wav', fn, d)),
   'mp3': (lambda fn,d: audio_tag('audio/mpeg', fn, d)),

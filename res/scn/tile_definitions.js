@@ -1,0 +1,72 @@
+const tileset_definitions = Object.freeze({
+  testBgTiles: [
+    32, 32, "res_scn_bg_tiles_small",
+    {
+      grass_light:   ['s',     0, 0],
+      grass_dark:    ['s',    10, 0],
+      glowing_rocks: ['s',     1, 0,  2, 0,  3, 0],
+      sand_light:    ['s',     4, 0],
+      sand_medium:   ['s',     5, 0],
+      sand_dark:     ['s',     6, 0],
+      tree:          ['wsv',   7, 0],
+      dead_tree:     ['ws',    8, 0],
+      temple:        ['wsv',   9, 0],
+      fountain:      ['w',    11, 0, 12, 0]
+    }
+  ],
+
+  testFgTiles: [
+    32, 32, "res_scn_fg_tiles_small",
+    {
+      diag_bars_opaque: ['',  0, 0],
+      diag_bars_50:     ['',  1, 0],
+      diag_bars_25:     ['',  2, 0]
+    }
+  ],
+
+  testTemplate: [
+    32, 32, "res_scn_tiles_template",
+    {
+      weeds_a:       ['s',     0, 1],
+      weeds_b:       ['s',     1, 1],
+      weeds_c:       ['s',     2, 1],
+      weeds_d:       ['s',     3, 1],
+      dirt_a:        ['s',     2, 3],
+      dirt_b:        ['s',     3, 3],
+      dirt_yn:       ['',      4, 1],
+      dirt_xn:       ['',      5, 1],
+      dirt_yp:       ['',      6, 1],
+      dirt_xp:       ['',      7, 1],
+      dirt_xnyn:     ['',      8, 1],
+      dirt_xnyp:     ['',      9, 1],
+      dirt_xpyp:     ['',     10, 1],
+      dirt_xpyn:     ['',     11, 1],
+      dirt_pxpy:     ['s',    12, 1],
+      dirt_pxny:     ['s',    13, 1],
+      dirt_nxny:     ['s',    14, 1],
+      dirt_nxpy:     ['s',    15, 1],
+      asphalt_a:     ['s',     0, 2],
+      asphalt_b:     ['s',     1, 2],
+      asphalt_vline: ['s',     2, 2],
+      asphalt_hline: ['s',     3, 2],
+      asphalt_yn:    ['',      4, 2],
+      asphalt_xn:    ['',      5, 2],
+      asphalt_yp:    ['',      6, 2],
+      asphalt_xp:    ['',      7, 2],
+      asphalt_xnyn:  ['',      8, 2],
+      asphalt_xnyp:  ['',      9, 2],
+      asphalt_xpyp:  ['',     10, 2],
+      asphalt_xpyn:  ['',     11, 2],
+      asphalt_pxpy:  ['s',    12, 2],
+      asphalt_pxny:  ['s',    13, 2],
+      asphalt_nxny:  ['s',    14, 2],
+      asphalt_nxpy:  ['s',    15, 2],
+      cliff:         ['swv',   1, 3],
+      cliff_yn:      ['',      4, 3],
+      cliff_xn:      ['sw',    5, 3],
+      cliff_yn:      ['sw',    7, 3],
+      cliff_xnyn:    ['',      8, 3],
+      cliff_xpyn:    ['',     11, 3]
+    }
+  ]
+}); /* Object.freeze */
