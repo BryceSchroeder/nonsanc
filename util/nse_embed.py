@@ -27,7 +27,11 @@ def srcatr(mime, data_or_path):
   else:
     return data_or_path
 
-def img_tag(mime, name, data):
+def img_tag(mime, name, data, hierarchy):
+  global loaders
+  loaders.append("%s = document.getElementById('%s');"%(
+        '.'.join(hierarchy),name))
+
   return '<img id="%s" style="display:none" src="%s">\n'%(
     name, srcatr(mime, data))
 
@@ -46,39 +50,48 @@ def img_tag(mime, name, data):
 #      name, data)
 
 
-def txt_tag(mime, name, data):
+def txt_tag(mime, name, data, hierarchy):
   global loaders
   yaml=False
+  json=False
   if mode == 'embed':
     f = str(data, 'utf-8')
     if f[0:3] == '---': 
-      loaders.append("_nse_yaml_loader('%s', true);"%(name))
-    
+      loaders.append("_nse_yaml_loader('%s', true, %s, '%s');"%(name, '.'.join(hierarchy[:-1]), hierarchy[-1]))
+    else: 
+      loaders.append("%s = document.getElementById('%s').innerHTML;"%(
+        '.'.join(hierarchy),name))
     return '<div id="%s" style="display:none">%s</div>\n'%(
       name, f)
   else:
     f = open(data).read()
     loaders.append("_nse_object_loader('_nse_%s', '%s');"%(name,name))
     if f[0:3] == '---': 
-      loaders.append("_nse_yaml_loader('%s', false);"%(name))
+      loaders.append("_nse_yaml_loader('%s', false, %s, '%s');"%(name, '.'.join(hierarchy[:-1]), hierarchy[-1]))
+    else:
+      loaders.append("%s = document.getElementById('%s').innerHTML;"%(
+        '.'.join(hierarchy),name))
     return '''<object id="_nse_%s" type="%s" data="%s" style="display:none">
       </object>\n'''%(
       name, mime, data)
 
-def json_tag(name, data):
+#def json_tag(name, data):
+#  global loaders
+#  if mode == 'embed':
+#    data = json.loads(str(data, 'utf-8'))
+#    return '''<script>\nnse_res["%s"] = %s;\n</script>\n'''%(
+#      name, json.dumps(data))
+#  else:
+#    return '''<object id="_nse_%s" type="application/json" data="%s" style="display:none"
+# onload="_nse_json_loader('_nse_%s', '%s')">
+#      </object>\n'''%(
+#      name, data,name,name)
+
+
+def audio_tag(mime, name, data, hierarchy):
   global loaders
-  if mode == 'embed':
-    data = json.loads(str(data, 'utf-8'))
-    return '''<script>\nnse_res["%s"] = %s;\n</script>\n'''%(
-      name, json.dumps(data))
-  else:
-    return '''<object id="_nse_%s" type="application/json" data="%s" style="display:none"
- onload="_nse_json_loader('_nse_%s', '%s')">
-      </object>\n'''%(
-      name, data,name,name)
-
-
-def audio_tag(mime, name, data):
+  loaders.append("%s = document.getElementById('%s');"%(
+        '.'.join(hierarchy),name))
   if mode == 'embed':
     return '''<audio id="%s" preload="auto" style="display:none">
   <source src="%s" />
@@ -88,7 +101,11 @@ def audio_tag(mime, name, data):
   else:
     return '''<audio id="%s" preload="auto" style="display:none">
   <source src="%s"/></audio>\n'''%(name, data)
-def css_tag(name, data):
+def css_tag(name, data, hierarchy):
+  global loaders
+  loaders.append("%s = document.getElementById('%s');"%(
+        '.'.join(hierarchy),name))
+
   if mode == 'embed':
     return '''<style id="%s" onload="this.disabled=true">\n%s</style>\n'''%(
       name, str(data, 'utf-8'),
@@ -96,7 +113,11 @@ def css_tag(name, data):
   else:
     return '<style id="%s" onload="this.disabled=true" src="%s"></style>\n'%(
       name, data)
-def script_tag(name, data):
+def script_tag(name, data, hierarchy):
+  #global loaders
+  #loaders.append("%s = document.getElementById('%s');"%(
+  #      '.'.join(hierarchy),name))
+
   if mode == 'embed':
     return '''<script id="%s">\n%s\n</script>\n'''%(
       name, str(data, 'utf-8'))
@@ -104,23 +125,22 @@ def script_tag(name, data):
     return '<script id="%s" src="%s"></script>\n'%(name, data)
 
 HANDLERS = {
-  'jpg': (lambda fn,d: img_tag('image/jpeg', fn, d)),
-  'png': (lambda fn,d: img_tag('image/png', fn, d)),
-  'gif': (lambda fn,d: img_tag('image/gif', fn, d)),
-  'svg': (lambda fn,d: img_tag('image/svg+xml', fn, d)),
-  'txt': (lambda fn,d: txt_tag('text/plain;charset=UTF-8', fn, d)),
-  'html':(lambda fn,d: txt_tag('text/html', fn, d)),
-  'htm': (lambda fn,d: txt_tag('text/html', d)),
+  'jpg': (lambda fn,d,h: img_tag('image/jpeg', fn, d, h)),
+  'png': (lambda fn,d,h: img_tag('image/png', fn, d, h)),
+  'gif': (lambda fn,d,h: img_tag('image/gif', fn, d, h)),
+  'svg': (lambda fn,d,h: img_tag('image/svg+xml', fn, d, h)),
+  'txt': (lambda fn,d,h: txt_tag('text/plain;charset=UTF-8', fn, d, h)),
+  'html':(lambda fn,d,h: txt_tag('text/html', fn, d, h)),
+  'htm': (lambda fn,d,h: txt_tag('text/html', d, h)),
 #  'yaml': (lambda fn,d: txt_tag('text/plain', fn, d)),
-  'css': (lambda fn,d: css_tag(fn, d)),
-  'js': (lambda fn,d: script_tag(fn, d)),
+  'css': (lambda fn,d,h: css_tag(fn, d, h)),
+  'js': (lambda fn,d,h: script_tag(fn, d, h)),
 #  'json': (lambda fn,d: json_tag(fn, d)),
 #  'yaml': (lambda fn,d: yaml_tag(fn, d)),
-  'ogg': (lambda fn,d: audio_tag('audio/ogg', fn, d)),
-  'wav': (lambda fn,d: audio_tag('audio/wav', fn, d)),
-  'mp3': (lambda fn,d: audio_tag('audio/mpeg', fn, d)),
+  'ogg': (lambda fn,d,h: audio_tag('audio/ogg', fn, d, h)),
+  'wav': (lambda fn,d,h: audio_tag('audio/wav', fn, d, h)),
+  'mp3': (lambda fn,d,h: audio_tag('audio/mpeg', fn, d, h)),
 }
-
 
 PREFIX = """
 <!-- Included Resources Begin -->
@@ -130,21 +150,22 @@ PREFIX = """
 <script>
 "use strict;"
 
-let nse_res = {};
+let nse = {};
 
 function _nse_json_loader(object_id, symbolic_name) {
   console.info("_nse_json_loader");
 }
 
-function _nse_yaml_loader(object_id, direct) {
-  console.log("_nse_yaml_loader", object_id, direct);
+function _nse_yaml_loader(object_id, direct, hierarch, name) {
+  //console.log("_nse_yaml_loader", object_id, direct);
   let object_contents = (direct?
       document.getElementById(object_id).innerHTML
     : document.getElementById(object_id).childNodes[0].innerHTML);
   
   //console.log(object_contents);
 
-  console.log(jsyaml.load(object_contents));
+
+  hierarch[name] = jsyaml.load(object_contents);
 }
 
 function _nse_object_loader(object_id, new_div_id) {
@@ -220,12 +241,17 @@ print (PREFIX, file = output_file)
 
 directories = sys.argv[3:]
 
+hierarchy = {}
 
 for directory in directories:
+  #hierarchy[directory] = {}
   for root, dirs, files in os.walk(directory):
-    path_prefix = '_'.join([x for x in root.split(os.path.sep) if x])
+    dpath = [x for x in root.split(os.path.sep) if x]
+
+    path_prefix = '_'.join(dpath)
     for filen in files:
       basename,typeext = os.path.splitext(filen)
+      #print ("**", dpath+[basename])
       typeext = typeext.lower()[1:]
       #print (os.path.join(root,filen))
       if typeext not in HANDLERS:
@@ -237,17 +263,27 @@ for directory in directories:
         if idnm in seen_ids:
           print ("Warning: duplicate ID: ", idnm, file=sys.stderr)
         seen_ids[idnm] = True
+        h = hierarchy
+        for level in dpath:
+          if not level in h:
+            h[level] = {}
+          h = h[level]
         tag = HANDLERS[typeext](
-          idnm, data.read() if mode == 'embed' else datapath)
+          idnm, data.read() if mode == 'embed' else datapath, dpath+[basename])
         if mode == 'embed': data.close()
         output_file.write(tag)
-
+#print (hierarchy)
 if used_YAML:
   print ("<!-- YAML Support required. js-yaml (C) (C) 2011-2015 by Vitaly Puzrin -->", 
          file = output_file)
 
 
 print ("<!-- Loaders for linked objects -->\n<script>\nfunction _nse_loaders() {\n", file=output_file)
+
+print ("  //Create object hierarchy", file=output_file)
+for toplevel in hierarchy.keys():
+  print ("  %s = %s"%(toplevel, json.dumps(hierarchy[toplevel])), file=output_file)
+
 for loader in loaders:
   print ("  "+loader, file=output_file)
 print ("\n}\n", file=output_file)
