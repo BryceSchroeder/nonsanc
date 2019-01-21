@@ -4,7 +4,6 @@
 #    (C) 2018-2019 Gnostic Instruments, Inc.
 #    Author(s): Bryce Schroeder, bryce@gnosticinstruments.com
 #
-#
 #    This program is free software: you can redistribute it and/or  modify
 #    it under the terms of the GNU Affero General Public License, version 3,
 #    as published by the Free Software Foundation.
@@ -17,6 +16,7 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
 import sys, os, base64, json
 mode = sys.argv[1] if len(sys.argv) > 2 else 'none'
 
@@ -31,17 +31,39 @@ def img_tag(mime, name, data):
   return '<img id="%s" style="display:none" src="%s">\n'%(
     name, srcatr(mime, data))
 
+#def yaml_tag(name, data):
+#  global used_YAML
+#  used_YAML = True
+#  print ("yaml_tag", name, data)
+#  global loaders
+#  loaders.append("_nse_yaml_loader('_nse_%s', '%s');"%(name,name))
+#  if mode == 'embed':
+#    return '''<div id="%s" style="display:none">%s</div>\n'''%(
+#      name, str(data, 'utf-8'))
+#  else:
+#    return '''<object id="_nse_%s" type="text/html" data="%s" style="display:none">
+#      </object>\n'''%(
+#      name, data)
+
+
 def txt_tag(mime, name, data):
   global loaders
+  yaml=False
   if mode == 'embed':
+    f = str(data, 'utf-8')
+    if f[0:3] == '---': 
+      loaders.append("_nse_yaml_loader('%s', true);"%(name))
+    
     return '<div id="%s" style="display:none">%s</div>\n'%(
-      name, str(data, 'utf-8'))
+      name, f)
   else:
+    f = open(data).read()
     loaders.append("_nse_object_loader('_nse_%s', '%s');"%(name,name))
-    return '''<object id="_nse_%s" type="%s" data="%s" style="display:none"
- onload="_nse_object_loader('_nse_%s', '%s')">
+    if f[0:3] == '---': 
+      loaders.append("_nse_yaml_loader('%s', false);"%(name))
+    return '''<object id="_nse_%s" type="%s" data="%s" style="display:none">
       </object>\n'''%(
-      name, mime, data,name,name)
+      name, mime, data)
 
 def json_tag(name, data):
   global loaders
@@ -86,17 +108,19 @@ HANDLERS = {
   'png': (lambda fn,d: img_tag('image/png', fn, d)),
   'gif': (lambda fn,d: img_tag('image/gif', fn, d)),
   'svg': (lambda fn,d: img_tag('image/svg+xml', fn, d)),
-  'txt': (lambda fn,d: txt_tag('text/plain', fn, d)),
+  'txt': (lambda fn,d: txt_tag('text/plain;charset=UTF-8', fn, d)),
   'html':(lambda fn,d: txt_tag('text/html', fn, d)),
   'htm': (lambda fn,d: txt_tag('text/html', d)),
+#  'yaml': (lambda fn,d: txt_tag('text/plain', fn, d)),
   'css': (lambda fn,d: css_tag(fn, d)),
   'js': (lambda fn,d: script_tag(fn, d)),
 #  'json': (lambda fn,d: json_tag(fn, d)),
-  'yaml': (lambda fn,d: yaml_tag(fn, d)),
+#  'yaml': (lambda fn,d: yaml_tag(fn, d)),
   'ogg': (lambda fn,d: audio_tag('audio/ogg', fn, d)),
   'wav': (lambda fn,d: audio_tag('audio/wav', fn, d)),
   'mp3': (lambda fn,d: audio_tag('audio/mpeg', fn, d)),
 }
+
 
 PREFIX = """
 <!-- Included Resources Begin -->
@@ -112,10 +136,19 @@ function _nse_json_loader(object_id, symbolic_name) {
   console.info("_nse_json_loader");
 }
 
+function _nse_yaml_loader(object_id, direct) {
+  console.log("_nse_yaml_loader", object_id, direct);
+  let object_contents = (direct?
+      document.getElementById(object_id).innerHTML
+    : document.getElementById(object_id).childNodes[0].innerHTML);
+  
+  //console.log(object_contents);
+
+  console.log(jsyaml.load(object_contents));
+}
+
 function _nse_object_loader(object_id, new_div_id) {
-  //console.info("_nse_object_loader");
-  //console.info(object_id);
-  //console.info(new_div_id);
+  //console.info("_nse_object_loader", object_id, new_div_id);
   let object_contents = document.getElementById(
     object_id).contentDocument.getElementsByTagName("body")[0].innerHTML;
   //console.info(object_contents);
@@ -178,7 +211,7 @@ loaders = []
 template_start, template_end = open(
   sys.argv[2], 'r').read().split(TAG)
 
-
+used_YAML = False
 
 
 output_file = open(sys.argv[2].replace('.html', '.pack.html'), 'w')
@@ -209,11 +242,21 @@ for directory in directories:
         if mode == 'embed': data.close()
         output_file.write(tag)
 
-#if mode == 'link':
-#  print ("<!-- Loaders for linked objects -->\n<script>", file=output_file)
-#  for loader in loaders:
-#    print (loader, file=output_file)
-#  print ("</script>", file=output_file)
+if used_YAML:
+  print ("<!-- YAML Support required. js-yaml (C) (C) 2011-2015 by Vitaly Puzrin -->", 
+         file = output_file)
+
+
+print ("<!-- Loaders for linked objects -->\n<script>\nfunction _nse_loaders() {\n", file=output_file)
+for loader in loaders:
+  print ("  "+loader, file=output_file)
+print ("\n}\n", file=output_file)
+print ("""
+window.onload = function () {
+  _nse_loaders();
+  main();
+};
+</script>""", file=output_file)
 print (SUFFIX, file = output_file)
 print (template_end, file = output_file)
 output_file.close()

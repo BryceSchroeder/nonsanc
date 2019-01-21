@@ -1,0 +1,11 @@
+---
+# This is a comment, which yaml supports
+name: Horatio the Squirrel-lord
+hobbies:
+  - Nut hiding
+  - Destruction of attics
+  - Chittering (with vigor)
+properties:
+  weight: 520
+  length: 280
+...
