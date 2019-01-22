@@ -282,7 +282,7 @@ for directory in directories:
         tag = HANDLERS[typeext](
           idnm, data.read() if mode == 'embed' else datapath, dpath+[basename])
         if mode == 'embed': data.close()
-        output_file.write(tag)
+        print (tag, file=output_file)
 #print (hierarchy)
 if used_YAML:
   print ("<!-- YAML Support required. js-yaml (C) (C) 2011-2015 by Vitaly Puzrin -->", 
