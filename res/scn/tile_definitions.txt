@@ -1,6 +1,8 @@
 ---
   testBgTiles: [
+    # Width, height, image_name, tiles
     32, 32, bg_tiles_small, {
+      # unique name   blocking  x,y  (Can be multiple pairs, for animations)
       grass_light:   ['s',     0, 0],
       grass_dark:    ['s',    10, 0],
       glowing_rocks: ['s',     1, 0,  2, 0,  3, 0],
