@@ -23,13 +23,11 @@
 
 "use strict";
 
-const playMap = Object.freeze({
+let playMap = {
+	lastFrameRequestID: undefined,
+	
 	cellFrameTick: function (t) {
-		for (let i = 0; i < gameMaps.map[render.map.name].cells.length; i++) {
-			for (let j = 0; j < gameMaps.map[render.map.name].cells[i].length; j++) {
-				gameMaps.map[render.map.name].cells[i][j].advanceFrame();
-			}
-		}
+		gameMaps.map[render.map.name].tickCellFrames();
 		
 		// Find the excess time beyond the nominal frame interval between this frame and the last one
 		render.cell.lastFrameSlip = (t - render.cell.lastFrameT) - render.cell.interval;
@@ -45,15 +43,7 @@ const playMap = Object.freeze({
 	},
 	
 	refreshMap: function (t) {
-		// TODO: split this apart to draw background tiles, then sprites, then foreground tiles
-		// This should probably be done in the GameMap class by creating a function to draw the map
-		for (let i = 0; i < gameMaps.map[render.map.name].cells.length; i++) {
-			for (let j = 0; j < gameMaps.map[render.map.name].cells[i].length; j++) {
-				let x = j * render.cell.sizeX;
-				let y = i * render.cell.sizeY;
-				gameMaps.map[render.map.name].cells[i][j].drawFrame(render.map.canvasContext, x, y, cell.BG_TILES | cell.FG_TILES, 1, 1);
-			}
-		}
+		gameMaps.map[render.map.name].drawMap(render.map.context);
 		
 		// Find the excess time, beyond the nominal frame interval, between this frame and the last one
 		render.map.lastFrameSlip = (t - render.map.lastFrameT) - render.map.interval;
@@ -75,12 +65,18 @@ const playMap = Object.freeze({
 		}
 		
 		// TODO: Poll input, etc., here
+		// Temporary for development: allows hitting spacebar to stop animating the map
+		if (keys.isInList(' ')) {
+			render.map.totalFrames = 6000;
+		}
+		
 		
 		if ((t - render.cell.lastFrameT) >= (render.cell.interval - render.cell.lastFrameSlip)) {
 			playMap.cellFrameTick(t);	// Update map cell frame number
 		}
 
-		if ((t - render.map.lastFrameT) >= (render.map.interval - render.map.lastFrameSlip)) {
+		// TODO: fix this for real
+		if ((t - render.map.lastFrameT) >= (render.map.interval - render.map.lastFrameSlip) - 3) { // Hacky fix by adding the - 3
 			playMap.refreshMap(t);		// Redraw the map
 		}
 
@@ -93,16 +89,11 @@ const playMap = Object.freeze({
 		}
 		*/
 		
-		if (render.map.totalFrames > 6000) {
+		playMap.lastFrameRequestID = requestAnimationFrame(playMap.loop);
+		if (render.map.totalFrames >= 6000) {
 			// Conditional exit from map loop to some other game functionality (dialogue box, menu, etc.)
-			// This is a stub; actual exit conditions will be coded later
-			// Right now it just renders 6000 frames and then exits the loop, so that the demo doesn't sit and run forever
-		}
-		else if (false) {
-			// Another possible point of conditional exit from map loop to some other game functionality
-		}
-		else {
-			requestAnimationFrame(playMap.loop);
+			// Actual exit conditions will be coded later
+			cancelAnimationFrame(playMap.lastFrameRequestID);
 		}
 	},
-});
+};

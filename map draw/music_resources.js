@@ -1,5 +1,5 @@
 /*
-	map_draw.css - CSS for map rendering engine test/demo
+	audio_resources.js - audio resource list for map rendering engine test/demo
 	 
 	---------------------------------------------------------------------
 	
@@ -21,5 +21,10 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#scratch	{background-color: #f00;
-			visibility: hidden;}
+"use strict";
+
+const musicResources = Object.freeze({
+	// Sound effect resource URLs go here:
+	
+	
+});

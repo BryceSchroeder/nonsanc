@@ -25,28 +25,33 @@
 
 let game = {
 	imgPreloaded: false,
-	audioPreloaded: false,
+	sfxPreloaded: false,
+	musicPreloaded: false,
 	
 	initialize: function () {
 		if (!game.imgPreloaded) {
 			// Call img resource loader
 			console.log('Loading images...');
-			imgLoader.loadImages();		// In resource_loader.js
+			imgLoader.loadImages(imgResources);		// In resource_loader.js
 		}
-		else if (!game.audioPreloaded) {
+		else if (!game.sfxPreloaded) {
 			// Call audio resource loader
 			console.log('Loading sounds...');
-			audioLoader.loadAudio();	// In resource_loader.js
+			sfxLoader.loadSfx(sfxResources);		// In resource_loader.js
+		}
+		else if (!game.musicPreloaded) {
+			// Call audio resource loader
+			console.log('Loading music...');
+			musicLoader.loadMusic(musicResources);	// In resource_loader.js
 		}
 		else {
 			// DOM handles
-			DOM.initializeDOM();
+			DOM.initializeDOM();	// In resource_loader.js
 			
 			// Add ability to click on map rendering canvas to resize it
-			// This is for development, remove later
+			// This is for development, will probably be removed later
 			DOM.mapCanvas.addEventListener('click', function () {
-				render.displayChanged = true;
-				if (render.scaleX == 1 || render.scaleY == 1) {
+				if (render.scaleX == 1) {
 					render.scaleX = 2;
 					render.scaleY = 2;
 				}
@@ -57,9 +62,9 @@ let game = {
 			});
 			
 			// Initialize game assets
-			console.log('Setting up game assets...');
-			tiles.createTiles();
-			gameMaps.createMaps();
+			console.log('Setting up game resources...');
+			tiles.createTiles(tileDefs);
+			gameMaps.createMaps(gameMapDefs);
 			console.log('done.');
 			
 			// Initialize renderer
@@ -68,17 +73,16 @@ let game = {
 			render.map.fps = 60;
 			render.cell.fps = 5;
 			render.dialogue.fps = 10;
-			render.findIntervals();
 
-			render.map.canvasContext = DOM.mapCanvas.getContext('2d');
+			render.map.context = DOM.mapCanvas;
 			
 			render.scaleX = 1;
 			render.scaleY = 1;
-			render.setupDisplay();
 			
 			console.log('done.');
 
 			// Start game loop (which is the map loop for now)
+			// Presumably this will be replaced with the opening cinematic as development progresses
 			console.log('Starting game.');
 			requestAnimationFrame(playMap.loop);
 		}

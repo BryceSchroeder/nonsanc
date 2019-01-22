@@ -30,26 +30,27 @@ const cell = Object.freeze({
 });
 
 class Cell {
-	constructor (bg_tiles = '', fg_tiles = '', traversable = true, start_frame = 1) {
+	constructor (bg_tiles = '', fg_tiles = '', trav = true, start_frame = 1) {
 		this.tiles = new Array();
 		
-		this.tiles[cell.BG_TILES] = new Array();
+		this.tiles[cell.BG_TILES] = [];
 		for (var i = 0; i < bg_tiles.length; i++) {
 			this.tiles[cell.BG_TILES].push(bg_tiles[i]);
 		}
 		
-		this.tiles[cell.FG_TILES] = new Array();
+		this.tiles[cell.FG_TILES] = [];
 		for (var i = 0; i < fg_tiles.length; i++) {
 			this.tiles[cell.FG_TILES].push(fg_tiles[i]);
 		}
 		
+		this.calculateFrameCount();
 		this.currentFrame = start_frame;	// Frame count starts at 1, not 0, to make modulo math easy
-		this.calculateFrameCount();		
-		this.setTraversable(traversable);
+
+		this.setTraversable(trav);
 	}
 	
 	// Draw Cell's tiles on context ctx at pixel coordinates (x, y), with optional scaling
-	drawFrame (ctx, x, y, tile_flags = cell.BG_TILES, scale_x = 1, scale_y = 1) {
+	drawFrame (ctx, x, y, tile_flags = cell.BG_TILES | cell.FG_TILES, scale_x = 1, scale_y = 1) {
 		if (tile_flags & cell.BG_TILES) {
 			for (var i = 0; i < this.tiles[cell.BG_TILES].length; i++) {
 				var tile_current_frame = this.currentFrame % tiles.tile[this.tiles[cell.BG_TILES][i]].getFrameCount();	
@@ -93,7 +94,7 @@ class Cell {
 			this.tiles[tile_list].push(tile_name);
 		}
 		else {
-			var new_tiles = new Array();
+			var new_tiles = [];
 			for (var i = 0; i < this.tiles[tile_list].length; i++) {
 				if (i == index) {
 					new_tiles.push(tile_name);
@@ -107,24 +108,33 @@ class Cell {
 	
 	// Remove all tiles by clearing the list
 	removeAllTiles (tile_list = cell.BG_TILES) {
-		this.tiles[tile_list] = new Array();
+		this.tiles[tile_list] = [];
 		this.calculateFrameCount();
 	}
 	
 	// Remove the last tile from the list
 	removeLastTile (tile_list = cell.BG_TILES) {
+		/*
 		var new_tiles = new Array();
 		for (var i = 0; i < (this.tiles[tile_list].length - 1); i++) {
 			new_tiles.push(this.tiles[tile_list][i]);
 		}
 
 		this.tiles[tile_list] = new_tiles;
-		this.calculateFrameCount();
+		*/
+		
+		// Changed to use the array.splice() method:
+		if (this.tiles[tile_list].length > 0) {
+			this.tiles[tile_list].splice((this.tiles[tile_list].length - 1), 1);
+			this.calculateFrameCount();
+		}
 	}
 	
 	// Remove tile at specified index in the tile list from cell
 	removeTileByIndex (index, tile_list = cell.BG_TILES) {
 		if (index >= 0 && index < this.tiles[tile_list].length) {
+			
+			/*
 			var new_tiles = new Array();
 			for (var i = 0; i < this.tiles[tile_list].length; i++) {
 				if (i != index) {
@@ -132,13 +142,17 @@ class Cell {
 				}
 			}
 			this.tiles[tile_list] = new_tiles;
+			*/
+			
+			// Changed to use the array.splice() method:
+			this.tiles[tile_list].splice(index, 1);
 			this.calculateFrameCount();
 		}
 	}
 	
 	// Remove all instances of a background tile with tile_name
 	removeTileByName (tile_name, tile_list = cell.BG_TILES) {
-		var new_tiles = new Array();
+		var new_tiles = [];
 		for (var i = 0; i < this.tiles[tile_list].length; i++) {
 			if (this.tiles[tile_list][i] != tile_name) {
 				new_tiles.push(this.tiles[tile_list][i]);
@@ -156,11 +170,16 @@ class Cell {
 		return this.tiles[tile_list];
 	}
 	
-	isTraversable () {
-		return this.traversable;
+	setTraversable (trav) {
+		if (trav) {
+			this.traversable = true;
+		}
+		else {
+			this.traversable = false;
+		}
 	}
 	
-	setTraversable (traversable) {
-		this.traversable = traversable;
+	isTraversable () {
+		return this.traversable;
 	}
 }
