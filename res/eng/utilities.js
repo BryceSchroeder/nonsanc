@@ -17,10 +17,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function random_int (mn, mx) {
+nse.random_int = function (mn, mx) {
   return Math.round(Math.random()*(mx-mn)) + mn;
 }
 
-function random_choice (indexable) {
-  return indexable[random_int(0, indexable.length-1)];
+nse.random_choice = function(indexable) {
+  return indexable[nse.random_int(0, indexable.length-1)];
 }

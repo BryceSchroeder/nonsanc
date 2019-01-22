@@ -151,6 +151,7 @@ PREFIX = """
 "use strict;"
 
 let nse = {};
+let con = {};
 
 function _nse_json_loader(object_id, symbolic_name) {
   console.info("_nse_json_loader");
@@ -169,9 +170,9 @@ function _nse_yaml_loader(object_id, direct, hierarch, name) {
 }
 
 function _nse_object_loader(object_id, new_div_id) {
-  //console.info("_nse_object_loader", object_id, new_div_id);
+  console.info("_nse_object_loader", object_id, new_div_id);
   let object_contents = document.getElementById(
-    object_id).contentDocument.getElementsByTagName("body")[0].innerHTML;
+      object_id).contentDocument.getElementsByTagName("body")[0].innerHTML;
   //console.info(object_contents);
   let destination = document.getElementById("_nse_loaded_objects");
   let new_div = document.createElement("div");

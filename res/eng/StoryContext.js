@@ -110,7 +110,7 @@ class StoryContext {
         this._force_rng = null;
         return tag_contents[saturated_index];
       } else
-        return random_choice(tag_contents);
+        return nse.random_choice(tag_contents);
       //return "{" + tag_contents.join("*") + "}";
     }
 
