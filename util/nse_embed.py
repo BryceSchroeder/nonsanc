@@ -27,6 +27,16 @@ def srcatr(mime, data_or_path):
   else:
     return data_or_path
 
+def full_split(pth):
+  r = []
+  while True:
+    a,b = os.path.split(pth)
+    pth = a
+    r.insert(0,b)
+    if not a: break
+  return r
+
+
 def img_tag(mime, name, data, hierarchy):
   global loaders
   loaders.append("%s = document.getElementById('%s');"%(
@@ -247,7 +257,7 @@ hierarchy = {}
 for directory in directories:
   #hierarchy[directory] = {}
   for root, dirs, files in os.walk(directory):
-    dpath = [x for x in root.split(os.path.sep) if x]
+    dpath = [x for x in full_split(root) if x]
 
     path_prefix = '_'.join(dpath)
     for filen in files:
