@@ -74,7 +74,7 @@ def txt_tag(mime, name, data, hierarchy):
     return '<div id="%s" style="display:none">%s</div>\n'%(
       name, f)
   else:
-    f = open(data).read()
+    f = open(data, 'r', encoding="utf-8").read()
     loaders.append("_nse_object_loader('_nse_%s', '%s');"%(name,name))
     if f[0:3] == '---': 
       loaders.append("_nse_yaml_loader('%s', false, %s, '%s');"%(name, '.'.join(hierarchy[:-1]), hierarchy[-1]))
@@ -241,12 +241,13 @@ seen_ids = {}
 loaders = []
 
 template_start, template_end = open(
-  sys.argv[2], 'r').read().split(TAG)
+  sys.argv[2], 'r', encoding="utf-8").read().split(TAG)
 
 used_YAML = False
 
 
-output_file = open(sys.argv[2].replace('.html', '.pack.html'), 'w')
+output_file = open(sys.argv[2].replace('.html', '.pack.html'), 'w',
+                   encoding="utf-8")
 print (template_start, file = output_file)
 print (PREFIX, file = output_file)
 
