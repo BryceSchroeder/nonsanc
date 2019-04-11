@@ -16,6 +16,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+var nse = {};
 
 nse.random_int = function (mn, mx) {
   return Math.round(Math.random()*(mx-mn)) + mn;
