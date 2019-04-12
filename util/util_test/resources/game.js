@@ -37,12 +37,12 @@ let game = {
 		else if (!game.sfxPreloaded) {
 			// Call audio resource loader
 			console.log('Loading sounds...');
-			sfxLoader.loadSfx(sfxResources);		// In resource_loader.js
+			sfxLoader.loadSfx(util_test.resources.soundfx);		// In resource_loader.js
 		}
 		else if (!game.musicPreloaded) {
 			// Call audio resource loader
 			console.log('Loading music...');
-			musicLoader.loadMusic(musicResources);	// In resource_loader.js
+			musicLoader.loadMusic(util_test.resources.music);	// In resource_loader.js
 		}
 		else {
 			// DOM handles

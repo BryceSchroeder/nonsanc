@@ -34,7 +34,6 @@ const imgLoader = Object.freeze({
 		for (var img in list) {
 			imgCount++;
 		}
-		//alert(imgCount);
 
 		let checkPreloadComplete = function (e) {
 			loadedImgs++;
@@ -45,16 +44,7 @@ const imgLoader = Object.freeze({
 			}
 		}
 		
-		/*
-		for (var src in list) {
-			imgLoader.imgs[src] = new Image();
-			imgLoader.imgs[src].addEventListener('load', checkPreloadComplete);
-			imgLoader.imgs[src].src = list[src];
-		}
-		*/
-		
 		for (var img in list) {
-			//alert(list[img]);
 			var temp = list[img].src;
 			list[img].addEventListener('load', checkPreloadComplete);
 			list[img].src = temp;
