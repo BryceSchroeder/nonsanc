@@ -28,6 +28,15 @@ For a more detailed explanation of how nsee2 works, see:
   https://github.com/BryceSchroeder/nonsanc/wiki
 """.strip()
 
+JAVASCRIPT_KEYWORDS = """
+break case catch continue debugger default delete do else finally for
+function if in instanceof new return switch this throw try typeof var void
+while with class const enum export extends import super implements let
+interface package private protected public static yield null true false 
+NaN Infinity undefined console int byte char goto long final float short
+double native throws boolean abstract volatile transient synchronized
+""".strip().split()
+
 # ------------------------------------------------------------------------
 
 import os, sys, base64, json, time, io
@@ -259,6 +268,12 @@ class ResourceTree:
   def traverse(self, tree, prefix = []):
     results = []
     for branch in tree:
+      if not branch.isidentifier():
+        print ("Warning: `"+branch+"' is not a valid identifier.",
+               file = sys.stderr)
+      if branch in JAVASCRIPT_KEYWORDS:
+        print ("Warning: `"+branch+"' may be a JS keyword.",
+               file = sys.stderr)
       if isinstance(tree[branch], Leaf): 
         results.append((tree[branch].__class__, tree[branch], 
                         prefix + [branch,]))
