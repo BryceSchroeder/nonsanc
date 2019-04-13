@@ -49,7 +49,7 @@ def full_split(pth):
     pth = a
     r.insert(0,b)
     if not a: break
-  return r
+  return [p for p in r if p]
 
 
 # ------------------------------------------------------------------------
@@ -364,3 +364,4 @@ resource_tree.embed(output_file)
 output_file.write(template_after)
 #for (res, (begin, end, mtime)) in resource_tree.index.items():
 #  print (res, begin, end, mtime)
+
