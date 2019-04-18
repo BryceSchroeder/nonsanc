@@ -29,7 +29,7 @@ function main () {
   let main_div = document.getElementById("nse_main_div");
   let text_example = res.scn.variable_text_example;
 
-  let sc = new StoryContext();
+  window.sc = new StoryContext();
   sc["Trainer"] = "Jack";
   sc["his"] = "his";
   sc["Rival"] = "Jill";
@@ -39,21 +39,48 @@ function main () {
   
   main_div.innerHTML = sc.process(text_example, {myLocal: "Hello!"});
 
-  /* TileSet testing */
-  let nse_tilesets = new TileSetManager();
-  let game_window = document.getElementById("nse_game_window");
-  let ctx = document.getElementById("map_canvas").getContext("2d");
-  ctx.fillRect(0,0,480,480);
-  nse_tilesets.testBgTiles.dead_tree.drawTile(ctx, 0, 0, n=0);
-  nse_tilesets.fountain.drawTile(ctx, 64, 32, n=1);
 
-  /* MapDraw testing */
-  /* Enable its stylesheet - style sheets integrated by nse_embed are 
-     disabled by default. */
-  document.getElementById("res_scn_map_draw").disabled = false;
+}
+
+/* Functions for testing purposes */
+function savegame () {
+  let savedata = sc.serialize();
+  console.log("Saving data: " + savedata);
+  let link = document.createElement('a');
+  link.setAttribute('style', 'display:none;');
+  link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(savedata));
+  link.setAttribute('download', sc.Trainer+'_save.json');
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link); // Clean up
+}
+
+function loadgame () {
+  let fileinput = document.createElement('input');
+  fileinput.setAttribute('style', 'display:none;');
+  fileinput.setAttribute('type', 'file');
+  fileinput.setAttribute('id', '_loadgame_file_input');
+  fileinput.addEventListener('change', function (e) {
+      console.log("changed");
+      let reader = new FileReader();
+      reader.onload = function (e) {
+        console.log("onload");
+        finish_loadgame(reader.result);
+      };
+      reader.readAsText(fileinput.files[0]);
+    });
+  document.body.appendChild(fileinput);
+  fileinput.click();
+}
+
+function finish_loadgame(savedata) {
+  console.log("finish_loadgame");
+  sc.deserialize(savedata);
+  let main_div = document.getElementById("nse_main_div");
 
 
-  
+  main_div.innerHTML = sc.process(res.scn.variable_text_example, {myLocal: "Hello from save!"});
 
-
+  let fileinput = document.getElementById('_loadgame_file_input');
+  document.body.removeChild(fileinput); // Clean up
 }

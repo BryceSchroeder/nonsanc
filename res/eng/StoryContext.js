@@ -195,4 +195,28 @@ class StoryContext {
       this[name] = additional_environment[name];
   }
 
+  /* Save the contents of the StoryContext to a string. */
+  serialize() {
+    let state = new Map();
+    for (let key in this) {
+      /* ignore keys that are inherited from the prototype, i.e. that are
+         not set by the scenario, and internal state information (variables
+         whose names begin with underscore.) */
+      if (!this.hasOwnProperty(key) || key[0] == '_') continue;
+      
+      //console.log("Key: " + key + " = " + this[key]);
+      state[key] = this[key];
+    }
+    return JSON.stringify(state);
+    
+  }
+
+  /* Restore the contents of the StoryContext from a string. */
+  deserialize(source) {
+    let state = JSON.parse(source);
+    for (let key in state) {
+      this[key] = state[key];
+    }
+  }
+
 }

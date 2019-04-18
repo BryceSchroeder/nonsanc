@@ -27,18 +27,22 @@
 <head>
 <!-- _NSE_RESOURCES -->
 </head>
-<body>
+<body onload="main()">
   This text is in the template.
 
 
 <section id="game_window">
-  <canvas id="map_canvas" width="480" height="480"></canvas>
+  <canvas id="map_canvas" width="480" height="180"></canvas>
 </section>
 <section id="scratch">
   <canvas id="scratch_canvas" width="0" height="0"></canvas>
 </section>
 
 <div id="nse_main_div"> </div>
+
+<button type="button" onclick="savegame()">Save Game State</button>
+<button type="button" onclick="loadgame()">Load Game State</button>
+
 
 </body>
 </html>
