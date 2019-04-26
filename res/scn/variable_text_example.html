@@ -1,24 +1,27 @@
 <meta charset="UTF-8">
 
 This is an example of variable text output.<br>
-
+<br>
 This illustrates random alternatives: [blue|green|yellow] is a color.<br>
-
+<br>
 Some alternatives may be empty or duplicated, e.g. "Maybe [or maybe not||]."<br>
-
+<br>
 All alternatives are equally likely, so duplicating them can coarsely 
-adjust probabilities.<br>
+adjust probabilities.<br><br>
 
 Random alternatives can be nested: [[blue|red] is a color|[A|B|C] is a letter].
-<br>
+<br><br>
 
 Variables from the substitutions passed into the text output engine
 can be referenced:<br> 
 The player character is named [Trainer], and [his] [sibling] is named [Rival].
-<br> 
+<br> <br>
 
 If the substitution value for the name in the tag is text, it is put into the
-output text directly. <br>
+output text directly. <br><br>
+
+Tags can also be evaluated as inline Javascript: 2 + 3 = [$String(2 + 3)]
+<br><br>
 
 If the substitution value is an int or bool, it pre-sets the random number 
 generator and generates no text output. This can be used to index random
@@ -27,19 +30,39 @@ alternatives using a substitution value which is an integer:<br>
 this [favorite_color][apple|grapefruit|banana] to eat."<br>
 Indicies saturate: if the value is less than 0, the alternative for 0 is 
 used, and if the value is greather than or equal to the index of the last
-alternative, the last alternative is used. <br>
+alternative, the last alternative is used. <br><br>
 
 As another example, for optional text using a boolean:<br>
 [ann_betrayed][|Did you think I would forget your betrayal, [Trainer]?]<br>
 Note that the <i>false</i> alternative is first, and the true is second;
-this is because false is interpreted as 0 and true as 1.<br>
+this is because false is interpreted as 0 and true as 1.<br><br>
 
 If it is a function, it is called with the name and the
 substitution value dictionary as parameters, and then the rules above are 
-applied depending on the return type.<br>
+applied depending on the return type.<br><br>
+
+Inline Javascript can be used in the same way: 
+  2+1 is: [$ 2+1 ][zero|one|two|three|four|five]
+<br><br>
+
+Variables can be manually established in locals with inline JS:
+My reindeer's name is [$ locals.reindeer = "Prancer"].
+[reindeer] is the best reindeer.
+<br><br>
+If you wish, you can suppress the output value of an eval tag by adding 
+an empty string to the end, [$ locals["reindeer"] = "Dancer";''] as here.
+
+[reindeer] is another reindeer.
+<br><br>
+
+If you are really creative or perverse, you can use eval tags like any
+other tag... [ [$locals.reindeer = "<b>Rudolph</b>" ]| 
+               [$ locals.reindeer = "<i>Jimbo</i>"  ]].
+<br><br>
+
 
 Brackets and pipes can be included in the text with an escape character,
 a backlash, \\: \[this is not a tag\].<br>
-My favorite special character is [\[|\]|\||\\].<br>
+My favorite special character is [\[|\]|\||\\].<br><br>
 
-This is a local variable: [myLocal]<br>
+This is a local variable: [myLocal]<br><br>

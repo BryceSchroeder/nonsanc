@@ -92,6 +92,15 @@ class StoryContext {
     //console.log("%&", this["Trainer"], typeof this[tag_contents[0]]);
     if (tag_contents.length == 1) {
       let name = tag_contents[0];
+
+      if (name[0] == '$') { /* Eval tag */
+        let eval_result = eval(name.slice(1));
+        /*console.log("Evalling", name.slice(1), "=", eval_result, "// a",
+                    typeof eval_result);*/
+        return this._handle_lookup(eval_result);
+      }
+
+
       if (name in StoryContext.prototype) {
         return `<b>StoryContext: '${name}' is a reserved variable name.</b>`
       }
