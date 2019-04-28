@@ -1,0 +1,32 @@
+--- # Example of a base dialogue to inherit from.
+# Entrypoint of the the conversation is $start
+$start: 
+  - "[Hello.|Hi.] I'm [SpeakerName]."
+  - Who are you? # Entry point of this conversation.
+  -
+   - I'm [LeaderName]. $friendly {locals.hostility = 0;}
+   - None of your business. $unfriendly {locals.hostility = 1};
+   - I'm [Lancer|Plasma|Turbo] [McCool|Blaze|Powers]. $liar
+     {locals.hostility = 2};
+$friendly: Nice to meet you, [LeaderName].
+$unfriendly: Whatever.
+$liar: 
+ - Sure, right.
+ - How did your parents come up with that one?
+ -
+  - It's totally my real name, just as surely as 2 plus 2 is ${2+2}.
+  - Just kidding, my name is [LeaderName]. 
+    {locals.hostility = 0;}
+squirrel: That's a kind of $rodent, I think.
+rat: That's like a big $mouse.
+sulfur,sulphur: It's a [yellow|solid|insulating] chemical element.
+                Would you like to buy some?
+"J. R. \"Bob\" Dobbs": A religious figure of some sort.
+rodent: An animal with gnawing teeth.
+mouse,mice: 
+  - You know, like a small $rat. Squeak squeak? {snd.squeak.play();}
+  - We don't see many of them around these days. [ $rodent1 | $rodent2 ] 
+  # different node based on result of VTOS tag... n.b. space is not important
+  # it can tell it's not an eval tag because there is more than one item.
+$bye: Later.
+...
