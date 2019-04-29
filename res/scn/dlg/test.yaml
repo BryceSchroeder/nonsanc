@@ -1,0 +1,7 @@
+---
+squirrel,squirrels: 
+  Nasty $tree rats, I hate 'em. Except $chipmunk$s, they're okay.
+chipmunk: Well, technically they're $squirrel$s, but they're alright.
+tree: I like trees. I bought one for \$3.25.
+test: The local variable <q>test</q> has the value [$locals.test].
+...

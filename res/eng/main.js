@@ -22,24 +22,36 @@
 */
 
 function main () {
-  console.log("NSE Engine: main.js coming online...");
+    console.log("NSE Engine: main.js coming online...");
 
+    /* StoryContext testing */
+    let main_div = document.getElementById("nse_main_div");
+    let text_example = res.scn.variable_text_example;
 
-  /* StoryContext testing */
-  let main_div = document.getElementById("nse_main_div");
-  let text_example = res.scn.variable_text_example;
-
-  window.sc = new StoryContext();
-  sc["Trainer"] = "Jack";
-  sc["his"] = "his";
-  sc["Rival"] = "Jill";
-  sc["sibling"] = "sister";
-  sc.favorite_color = 2; // This works too, might as well own it.
-  sc.ann_betrayed = true;
+    window.sc = new StoryContext();
+    sc["Trainer"] = "Jack";
+    sc["LeaderName"] = "Jack"; // current party leader, i.e. the person who talks to NPCs
+    sc["his"] = "his";
+    sc["Rival"] = "Jill";
+    sc["sibling"] = "sister";
+    sc.favorite_color = 2; // This works too, might as well own it.
+    sc.ann_betrayed = true;
   
-  main_div.innerHTML = sc.process(text_example, {myLocal: "Hello!"});
+    main_div.innerHTML = sc.process(text_example, {myLocal: "Hello!"});
 
+    /* Conversation testing */
+    convo = new Conversation(res.scn.dlg.base, res.scn.dlg.test);
+    convo.begin_conversation(sc, {SpeakerName: "Bob"}); 
+    // NPCs will have a methods to generate their locals (name, pronouns, etc)
 
+    console.log("CONVERSATION");
+    let i = 0;
+    while (convo.has_more_to_say() && ++i < 10) { 
+        console.log(">>>", convo.get_npc_line());
+        console.log("Responses:", convo.current_responses(), 
+                    "Keywords:", convo.current_keywords());
+    }
+    
 }
 
 /* Functions for testing purposes */
