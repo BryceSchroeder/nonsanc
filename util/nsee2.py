@@ -167,7 +167,7 @@ class DataLeaf(Leaf):
     lhs = '.'.join(left_side)
     data = open(self.file_name,'r').read()
     if self.format == 'yaml':
-      data = json.dumps(yaml.load(data))
+      data = json.dumps(yaml.safe_load(data))
     target.write("%s = JSON.parse(atob('"%lhs)
     target.write(str(base64.b64encode(bytes(data, 'utf-8')), 'utf-8'))
     target.write("'));\n")
