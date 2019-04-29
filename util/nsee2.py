@@ -112,7 +112,7 @@ class ObjectLeaf(Leaf):
         if not HAS_YAML:
           print ("No YAML support but %s exists."%instance, file=sys.stderr)
           sys.exit(-3)
-        data = json.dumps(yaml.load(data))
+        data = json.dumps(yaml.safe_load(data))
       target.write("%s.%s = new %s();\n"%(lhs, instance_name, 
                                           self.class_name))
       target.write("Object.assign(%s.%s, JSON.parse(atob('"%(

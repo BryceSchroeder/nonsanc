@@ -54,12 +54,10 @@ function test_conversation(convo) {
     }
 
     if (convo.has_more_to_say()) {
-        console.log("X1");
         document.getElementById("pc_line").innerHTML = `
                 <button onclick="test_conversation(convo)">(Continue listening)</button>
             `;
     } else if (!convo.current_keywords().size) {
-        console.log("X2");
         let responses = new Array();
         let i = 0;
         for (response of convo.current_responses()) {
@@ -70,7 +68,6 @@ function test_conversation(convo) {
         }
         document.getElementById("pc_line").innerHTML = responses.join('\n');
     } else { 
-        console.log("X3");
         let responses = new Array();
         for (response of convo.current_keywords()) {
             responses.push(
