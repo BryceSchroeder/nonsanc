@@ -41,7 +41,7 @@ double native throws boolean abstract volatile transient synchronized
 
 import os, sys, base64, json, time, io
 import os.path
-
+ENABLE_CACHE = True
 HAS_YAML = False
 try:
   import yaml
@@ -80,6 +80,7 @@ class Leaf:
   def end_type(self, target):
     target.write("/* END Resource type: %s */\n"%self.name)
   def is_up_to_date(self):
+    if not ENABLE_CACHE: return False
     if not os.path.exists(self.file_name+".cache"): return False
     cache_mtime = os.path.getmtime(self.file_name+".cache")
     source_mtime = os.path.getmtime(self.file_name)
@@ -318,12 +319,18 @@ class ResourceTree:
     target.write("</script>\n")
 
 # ------------------------------------------------------------------------
-
-
+if '--no-cache' in sys.argv:
+  ENABLE_CACHE = False
+  sys.argv.remove('--no-cache')
 # Gather arguments
 if len(sys.argv) < 3:
   print(USAGE_TEXT, file=sys.stderr)
   sys.exit(-1)
+
+
+
+
+
 template_path = sys.argv[1]
 root_paths = sys.argv[2:]
 
