@@ -3,18 +3,22 @@
 $DEFAULT: $ [[LAST_KEYWORD_TITLE]? I don't know about that.|
              I don't know about [LAST_KEYWORD], sorry.]
 $START: 
+  - $ [$ locals.test = "Parrot";
+         locals.SpeakerPortrait = res.scn.img.happy;
+         ''
+      ] 
   - "[Hello.|Hi.] I'm [SpeakerName]. I'm a $squirrel hunter."
-  - $ [$ locals.test = "Parrot";'']
   - Who are you? # Entry point of this conversation.
   -
    - I'm [LeaderName]. $friendly [$ locals.hostility = 0;'']
    - None of your business. $unfriendly [$ locals.hostility = 1;'']
    - I'm [Lancer|Plasma|Turbo] [McCool|Blaze|Powers]. $liar
      [$ locals.hostility = 2;'']
-$friendly: Nice to meet you, [LeaderName].
-$unfriendly: Whatever.
+$friendly: Nice to meet you, [LeaderName]. 
+           [$ locals.SpeakerPortrait = res.scn.img.happy;'']
+$unfriendly: Whatever. [$ locals.SpeakerPortrait = res.scn.img.sad;'']
 $liar: 
- - Sure, right.
+ - Sure, right. [$ locals.SpeakerPortrait = res.scn.img.sad;'']
  - How did your parents come up with that one?
  -
   - It's totally my real name, just as surely as 2 plus 2 is [$String(2+2)]. 

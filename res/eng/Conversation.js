@@ -123,6 +123,10 @@ class Conversation {
         }
     }
 
+    get_local(key) {
+        return this._locals[key];
+    }
+
     current_keywords() {
         return (this._current_responses.length || this.has_more_to_say())? 
             new Set() : this._current_keywords;

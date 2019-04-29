@@ -49,9 +49,17 @@ function main () {
 }
 
 function test_conversation(convo) {
+
+    
     if (convo.has_more_to_say()) {
         document.getElementById("npc_line").innerHTML = convo.get_npc_line();
     }
+
+    // this is almost certainly not the best way to do it, someone with better DOM-fu
+    // should change it to something better 
+    let portrait_div = document.getElementById("npc_portrait");
+    portrait_div.innerHTML = "";
+    portrait_div.appendChild(convo.get_local("SpeakerPortrait"));
 
     if (convo.has_more_to_say()) {
         document.getElementById("pc_line").innerHTML = `
