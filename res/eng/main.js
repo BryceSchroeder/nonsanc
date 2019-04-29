@@ -43,15 +43,47 @@ function main () {
     convo = new Conversation(res.scn.dlg.base, res.scn.dlg.test);
     convo.begin_conversation(sc, {SpeakerName: "Bob"}); 
     // NPCs will have a methods to generate their locals (name, pronouns, etc)
+    test_conversation(convo);
 
-    console.log("CONVERSATION");
-    let i = 0;
-    while (convo.has_more_to_say() && ++i < 10) { 
-        console.log(">>>", convo.get_npc_line());
-        console.log("Responses:", convo.current_responses(), 
-                    "Keywords:", convo.current_keywords());
-    }
     
+}
+
+function test_conversation(convo) {
+    if (convo.has_more_to_say()) {
+        document.getElementById("npc_line").innerHTML = convo.get_npc_line();
+    }
+
+    if (convo.has_more_to_say()) {
+        console.log("X1");
+        document.getElementById("pc_line").innerHTML = `
+                <button onclick="test_conversation(convo)">(Continue listening)</button>
+            `;
+    } else if (!convo.current_keywords().size) {
+        console.log("X2");
+        let responses = new Array();
+        let i = 0;
+        for (response of convo.current_responses()) {
+            responses.push(`<button onclick="convo.give_pc_line(${i}); test_conversation(convo)">
+                                 ${response}
+                            </button><br>`)
+            i += 1;
+        }
+        document.getElementById("pc_line").innerHTML = responses.join('\n');
+    } else { 
+        console.log("X3");
+        let responses = new Array();
+        for (response of convo.current_keywords()) {
+            responses.push(
+                `Ask about 
+                   <button onclick="convo.give_pc_line('${response}'); test_conversation(convo)">
+                                ${response}
+                            </button><br>`)
+        }
+        document.getElementById("pc_line").innerHTML = responses.join('\n')+`
+            <button onclick="convo.give_pc_line(document.getElementById('freetext').value); test_conversation(convo)">
+            Ask about:</button><input type="text" id="freetext"><br>
+            <button onclick="convo.end_conversation(); test_conversation(convo); document.getElementById('pc_line').innerHTML = '(Conversation ends)'">Goodbye!</button>`;
+    } 
 }
 
 /* Functions for testing purposes */

@@ -49,6 +49,10 @@ class Conversation {
         this._configure_for_node(start_node);
     }
 
+    end_conversation() {
+        this._configure_for_node("$BYE");
+    }
+
     
     get_npc_line() {
         let locals = this._locals; 
